@@ -7,7 +7,7 @@ const invitationData = {
   groom: "Erikc Tambunan",
   bride: "Florency Pardede",
   dateLabel: "Sabtu, 12 Desember 2026",
-  dateISO: "2026-12-12T09:00:00+07:00",
+  dateISO: "2026-12-12T10:00:00+07:00",
   whatsappNumber: "081370711753",
 
   // Data Wedding Gift
@@ -45,34 +45,17 @@ openButton.addEventListener("click", () => {
 
 // Nama tamu bisa diisi lewat tautan: index.html?to=Nama%20Tamu
 const params = new URLSearchParams(window.location.search);
-const guest = params.get("to");
-if (guest && guest.trim()) {
-  document.getElementById("guestName").textContent = guest.trim();
+const guest = (params.get("to") || "").trim().slice(0, 60);
+if (guest) {
+  document.getElementById("guestName").textContent = guest;
+
+  // isi otomatis nama di form RSVP
+  const rsvpNameInput = document.getElementById("rsvpName");
+  if (rsvpNameInput && !rsvpNameInput.value) rsvpNameInput.value = guest;
 }
 document.getElementById("coverDate").textContent = invitationData.dateLabel;
 document.title = `Undangan Pernikahan | ${invitationData.groom} & ${invitationData.bride}`;
 
-
-const bankNameElement = document.getElementById("bankName");
-const accountNameElement = document.getElementById("accountName");
-const accountNumberElement = document.getElementById("accountNumber");
-const qrisImageElement = document.querySelector(".qris-image");
-
-if (bankNameElement) {
-  bankNameElement.textContent = invitationData.bankName;
-}
-
-if (accountNameElement) {
-  accountNameElement.textContent = invitationData.accountName;
-}
-
-if (accountNumberElement) {
-  accountNumberElement.textContent = invitationData.accountNumber;
-}
-
-if (qrisImageElement) {
-  qrisImageElement.src = invitationData.qrisImage;
-}
 
 const targetDate = new Date(invitationData.dateISO).getTime();
 const countdownMessage = document.getElementById("countdownMessage");
@@ -211,6 +194,9 @@ copyAccountButtons.forEach((button) => {
     try {
       await navigator.clipboard.writeText(accountNumber);
       button.textContent = "Nomor Berhasil Disalin!";
+      setTimeout(() => {
+        button.textContent = "Salin Nomor Rekening";
+      }, 2000);
     } catch (error) {
       alert("Gagal menyalin nomor. Silakan salin secara manual: " + accountNumber);
     }
@@ -266,8 +252,6 @@ copyAccountButtons.forEach((button) => {
 
   document.body.appendChild(script);
 })();
-
-// ===== MUSIK LATAR UNDANGAN =====
 
 // ===== MUSIK LATAR UNDANGAN =====
 
